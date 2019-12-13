@@ -8,6 +8,22 @@
   </div>
 </template>
 
+<script>
+import { onBeforeMount } from '@vue/composition-api';
+import { initialLIFF } from './composition/liff'
+
+export default {
+  setup() {
+    
+    onBeforeMount(() => {
+       initialLIFF();
+    })
+    return {}
+  }
+}
+</script>
+
+
 <style lang="scss">
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
