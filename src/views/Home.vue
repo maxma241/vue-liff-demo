@@ -16,6 +16,7 @@
       <div>
         <div id="login">
           <h1>First, log in to spotify</h1>
+          button
           <a href="/api/spotify/login">Log in</a>
           <div id="loggedin"></div>
 
