@@ -1,32 +1,51 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <template v-if="!isLogin">
+      <h2>Login with spotify</h2>
+    </template>
+    <template v-else>
+      <div id="nav">
+        <router-link to="/">home</router-link>|
+        <router-link to="/about">About</router-link>
+      </div>
+    </template>
+    <div v-if="isLiffReady">
+      <router-view />
     </div>
-    <router-view/>
   </div>
 </template>
 
 <script>
-import { onBeforeMount } from '@vue/composition-api';
-import { initialLIFF } from './composition/liff'
+import { onBeforeMount, ref, reactive, watchEffect, watch } from "@vue/composition-api";
+import { initialLIFF } from "./composition/liff";
+import { checkIsLogin } from "./composition/login-ctx";
 
 export default {
-  setup() {
-    
-    onBeforeMount(() => {
-       initialLIFF();
+  setup(props, ctx) {
+    const isLiffReady = ref(false);
+
+    initialLIFF().then(() => {
+      isLiffReady.value = true;
+    });
+
+    const isLogin = ref(false);
+
+    watch(() => ctx.root.$route, () => {
+      isLogin.value = checkIsLogin();
     })
-    return {}
+
+    return {
+      isLiffReady,
+      isLogin
+    };
   }
-}
+};
 </script>
 
 
 <style lang="scss">
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

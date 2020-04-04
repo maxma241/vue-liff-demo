@@ -1,4 +1,5 @@
-import { reactive, toRefs } from '@vue/composition-api';
+import { reactive, toRefs, onMounted } from '@vue/composition-api';
+import { getUserIdByApp, randomId, setAppUserId } from './login-ctx';
 
 
 export const initialLIFF = async () => {
@@ -11,6 +12,7 @@ export const initialLIFF = async () => {
       liffId,
     })
     console.info('LIFF ver.', LIFF.getVersion())
+    return true;
   } catch (err) {
     console.error(err);
   }
@@ -18,6 +20,7 @@ export const initialLIFF = async () => {
 
 export const useLiffContext = () => {
   const liffCtx = reactive({
+    userId: '',
     language: window.liff.getLanguage(),
     version: window.liff.getVersion(),
     isInClient: window.liff.isInClient(),
@@ -25,6 +28,19 @@ export const useLiffContext = () => {
     os: window.liff.getOS(),
     accessToken: window.liff.getAccessToken(),
   });
+
+  onMounted(() => {
+    if (liffCtx.isInClient) {
+      liffCtx.userId = window.liff?.getProfile()?.userId;
+    } else {
+      let userId = getUserIdByApp();
+      if (!userId) {
+        userId = randomId()
+        setAppUserId(userId)
+      }
+      liffCtx.userId = userId;
+    }
+  })
 
   return toRefs(liffCtx);
 }

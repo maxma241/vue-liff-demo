@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getUserIdByApp } from '@/composition/login-ctx';
 
 export interface BaseApiResult<T extends any> {
   success: boolean
@@ -16,6 +17,6 @@ export const liffSpotifyApiUriList = {
 export default axios.create({
   baseURL: process.env.VUE_APP_API_BASE_URL,
   headers: {
-    
-  }
+    'User-ID': getUserIdByApp()
+  },
 })
